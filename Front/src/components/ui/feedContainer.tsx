@@ -11,37 +11,41 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
  
-export function PaginationDemo() {
+export function PaginationDemo({ universities, setFeed }) {
+  const [page, setPage] = useState(1);
+  const universitiesPerPage = 10;
+  const totalPages = Math.ceil(universities.length / universitiesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setPage(pageNumber);
+    setFeed(universities.slice((pageNumber - 1) * universitiesPerPage, pageNumber * universitiesPerPage));
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <PaginationPrevious href="#" onClick={() => handlePageChange(page - 1 >= 1 ? page - 1 : page)} />
         </PaginationItem>
+        {[...Array(totalPages)].map((_, index) => (
+          <PaginationItem key={index + 1}>
+            <PaginationLink href="#" onClick={() => handlePageChange(index + 1)} isActive={page === index + 1}>
+              {index + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
         <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+          <PaginationNext href="#" onClick={() => handlePageChange((page + 1) <= totalPages ? page + 1 : page)} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
-  )
+  );
 }
 
 function FeedContainer() {
   const [universities, setUniversities] = useState([]);
+  const [feed, setFeed] = useState([]);
+  
 
   useEffect(() => {
     const fetchUniversities = async () => {
@@ -49,6 +53,7 @@ function FeedContainer() {
         const response = await axios.get('http://localhost:3000/universities');
         console.log(response.data)
         setUniversities(response.data);
+        setFeed(response.data.slice(0, 10));
       } catch (error) {
         console.error('Error fetching universities:', error);
       }
@@ -56,13 +61,14 @@ function FeedContainer() {
 
     fetchUniversities();
   }, []);
+  
   return (
     <>
       <div >
-        {universities.map((university) => (
-          <FeedContent key={university.id} university={university} />
+        {feed.map((university) => (
+          <FeedContent key={university._id} university={university} />
         ))}
-        <PaginationDemo/>
+        <PaginationDemo universities={universities} setFeed={setFeed}/>
       </div>
     </>
   );

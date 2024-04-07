@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
 import Express from "express";
+import fs from 'fs';
 import cors from "cors";
 import bodyParser from "body-parser";
 import University from "./model/University.js";
 import FeeStructure from "./model/FeeStructure.js";
 import Course from "./model/Course.js";
 
+dotenv.config();
+
 mongoose.connect(process.env.MONGO_URL);
+
+// console.log(process.env.MONGO_URL);
 
 const app = Express();
 const PORT = 3000;
@@ -14,79 +20,55 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-async function CreateIfNotMade(obj, Model) {
-  try {
-    const check = await Model.exists({ _id: obj._id });
-    if (!check) {
-      await obj.save();
-      console.log(`${obj.constructor.modelName} created successfully.`);
-    } else {
-      console.log(`${obj.constructor.modelName} already exists.`);
+async function saveDataToMongoDB(data) {
+    try {
+        for (const entry of data) {
+            // Create Field instance
+            const field = await Course.create(entry.field);
+
+            // Create Fee instance
+            const fee = await FeeStructure.create(entry.fee);
+
+            // Create University instance and link with Field and Fee
+            const university = await University.create({
+                rank: entry.rank,
+                name: entry.name,
+                location: entry.location,
+                tags: entry.tags,
+                description: entry.description,
+                field: field._id,
+                fee: fee._id,
+                image_url: entry.image_url
+            });
+
+            console.log('University created:', university.name);
+        }
+        console.log('All universities saved successfully.');
+    } catch (error) {
+        console.error('Error saving universities:', error);
     }
-  } catch (error) {
-    console.error(
-      `Error while checking or creating ${obj.constructor.modelName}: ${error.message}`,
-    );
-  }
 }
 
-// Create mock-up data for universities
-const universities = [
-  {
-    name: "University of Example",
-    description: "A leading institution in example studies.",
-    image_url: "university_example.jpg",
-    location: "Example City, Example Country",
-    tags: ["example", "education"],
-  },
-  {
-    name: "Another University",
-    description: "A prestigious institution offering various courses.",
-    image_url: "another_university.jpg",
-    location: "Another City, Another Country",
-    tags: ["prestigious", "education"],
-  },
-  // Add more universities as needed
-];
+// Read data from JSON file
+fs.readFile('universities.json', 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading JSON file:', err);
+        return;
+    }
 
-const coursesData = [
-  {
-    name: "Computer Science",
-    description: "Introduction to computer science concepts.",
-    tags: ["computer science", "programming", "software"],
-    Requirements: ["Basic math skills", "Logical thinking"],
-    SemesterInfo: ["Spring", "Fall"],
-  },
-  {
-    name: "Biology",
-    description: "Study of living organisms and their interactions.",
-    tags: ["biology", "science", "life sciences"],
-    Requirements: ["Basic biology knowledge"],
-    SemesterInfo: ["Spring", "Fall"],
-  },
-  // Add more courses as needed
-];
+    try {
+        const universitiesData = JSON.parse(data);
+        saveDataToMongoDB(universitiesData);
+    } catch (error) {
+        console.error('Error parsing JSON data:', error);
+    }
+});
 
-// Create mock-up data for fee structures
-const feeStructuresData = [
-  {
-    SemesterFees: 5000,
-    Transportation: 1000,
-    Accommodation: 2000,
-    PaymentFrequency: "Annual",
-  },
-  {
-    SemesterFees: 6000,
-    Transportation: 1200,
-    Accommodation: 2500,
-    PaymentFrequency: "Monthly",
-  },
-  // Add more fee structures as needed
-];
+
 
 app.get("/universities", async (req, res) => {
   try {
-    const universities = await University.find().populate("Fee Course");
+    const universities = await University.find().populate("fee field");
     res.json(universities);
   } catch (err) {
     res.status(500).json({ message: err.message });

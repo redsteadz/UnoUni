@@ -8,16 +8,17 @@ const UniversitySchema = new Schema({
     required: true,
     unique: true,
   },
+  rank: Number,
   description: String,
   image_url: String,
   location: String,
   tags: [String],
-  Fee: {
+  fee: {
     type: SchemaTypes.ObjectId,
     ref: "FeeStructure",
     unique: true,
   },
-  Course: {
+  field: {
     type: SchemaTypes.ObjectId,
     ref: "Course",
   },

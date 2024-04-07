@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 const { Schema, SchemaTypes, model } = mongoose;
 
 const CourseSchema = new Schema({
-  name: String,
-  description: String,
-  tags: [String],
-  Requirements: [String], 
-  SemesterInfo: [String],
+  "Arts & Humanities ": [String],
+  "Language & Cultural ": [String],
+  "Business & Social Sciences ": [String],
+  "Medicine & Health ": [String],
+  "Science & Technology ": [String],
+  "Engineering ": [String],
 });
 
 const Course = model("Course", CourseSchema);
