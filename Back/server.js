@@ -68,6 +68,7 @@ app.get("/universities", async (req, res) => {
     const universities = await University.find().populate("fee field");
     res.json(universities);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });

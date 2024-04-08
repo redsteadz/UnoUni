@@ -15,7 +15,7 @@ function Search() {
           <GiHamburgerMenu size={20} />
         </motion.div>
         <motion.div
-          className={`flex items-center gap-2 border-gray-500 border-2 rounded-md px-1 flex-1`}
+          className={`flex items-center gap-2 border-transparent border-2 rounded-md px-1 flex-1`}
           initial={{ scale: 0.95, opacity: 1 }} // Initial animation state
           animate={{ scale: 1, opacity: 1 }} // Animation when component mounts
           whileHover={{ scale: 1.02 }} // Animation on hover

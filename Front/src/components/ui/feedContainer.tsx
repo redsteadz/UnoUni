@@ -28,7 +28,7 @@ export function PaginationDemo({universities, setFeed }) {
           <PaginationPrevious href="#" onClick={() => handlePageChange(page - 1 >= 1 ? page - 1 : page)} />
         </PaginationItem>
         {[...Array(totalPages)].map((_, index) => (
-          <PaginationItem key={index + 1}>
+          <PaginationItem className={page === index + 1 ? "text-gray-800" : "text-white"} key={index + 1}>
             <PaginationLink href="#" onClick={() => handlePageChange(index + 1)} isActive={page === index + 1}>
               {index + 1}
             </PaginationLink>

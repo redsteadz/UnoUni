@@ -20,13 +20,13 @@ const FeedContent: React.FC<FeedContentProps> = ({ university }) => {
   const { name, description, image_url, tags } = university;
   return (
     <Link to={`university/${university._id}`}>
-    <div className="flex flex-col justify-center items-center my-2 border-gray-600  border-2 rounded-md p-2">
+    <div className="flex flex-col  justify-center items-center my-2 border-gray-600  border-2 rounded-md p-2">
       <div className="flex flex-row justify-start gap-2 w-full">
         <section className="max-w-32 flex items-center justify-center max-h-28 rounded-lg overflow-hidden shadow-lg">
           <img src={image_url} alt={name} className="w-auto h-auto min-w-fit min-h-fit" />
         </section>
         <section className="flex flex-col w-full flex-1">
-          <h1 className="text-sm md:text-xl lg:text-2xl font-bold text-gray-800 leading-tight">
+          <h1 className="text-sm md:text-xl lg:text-2xl font-bold text-gray-200 leading-tight">
             {name}
           </h1>
           <p className="max-h-24 overflow-scroll scrollbar-hide text-sm md:text-md lg:text-md">
