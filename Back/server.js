@@ -23,13 +23,10 @@ app.use(cors());
 async function saveDataToMongoDB(data) {
     try {
         for (const entry of data) {
-            // Create Field instance
             const field = await Course.create(entry.field);
 
-            // Create Fee instance
             const fee = await FeeStructure.create(entry.fee);
 
-            // Create University instance and link with Field and Fee
             const university = await University.create({
                 rank: entry.rank,
                 name: entry.name,

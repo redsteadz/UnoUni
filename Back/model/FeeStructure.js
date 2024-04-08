@@ -7,6 +7,8 @@ const FeeStructureSchema = new Schema({
   Internationalstudents: [String]
  });
 
+
+
 const FeeStructure = model("FeeStructure", FeeStructureSchema);
 
 export default FeeStructure;
