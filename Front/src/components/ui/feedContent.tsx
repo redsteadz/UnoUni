@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import fast from "../../assets/FAST.jpeg";
 import { Badge } from "@/components/ui/badge";
 
@@ -11,12 +12,14 @@ interface FeedContentProps {
     tags: string[];
     Fee?: string; // Assuming Fee is the ObjectId of a FeeStructure
     Course?: string; // Assuming Course is the ObjectId of a Course
+    _id: string;
   };
 }
 
 const FeedContent: React.FC<FeedContentProps> = ({ university }) => {
   const { name, description, image_url, tags } = university;
   return (
+    <Link to={`university/${university._id}`}>
     <div className="flex flex-col justify-center items-center my-2 border-gray-600  border-2 rounded-md p-2">
       <div className="flex flex-row justify-start gap-2 w-full">
         <section className="max-w-32 flex items-center justify-center max-h-28 rounded-lg overflow-hidden shadow-lg">
@@ -39,6 +42,7 @@ const FeedContent: React.FC<FeedContentProps> = ({ university }) => {
         ))}
       </div>
     </div>
+    </Link>
   );
 }
 

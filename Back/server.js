@@ -47,19 +47,19 @@ async function saveDataToMongoDB(data) {
 }
 
 // Read data from JSON file
-fs.readFile('universities.json', 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error reading JSON file:', err);
-        return;
-    }
-
-    try {
-        const universitiesData = JSON.parse(data);
-        saveDataToMongoDB(universitiesData);
-    } catch (error) {
-        console.error('Error parsing JSON data:', error);
-    }
-});
+// fs.readFile('universities.json', 'utf8', (err, data) => {
+//     if (err) {
+//         console.error('Error reading JSON file:', err);
+//         return;
+//     }
+//
+//     try {
+//         const universitiesData = JSON.parse(data);
+//         saveDataToMongoDB(universitiesData);
+//     } catch (error) {
+//         console.error('Error parsing JSON data:', error);
+//     }
+// });
 
 
 
@@ -71,6 +71,18 @@ app.get("/universities", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+app.get("/universities/:id", async (req, res) => {
+  const id = req.params.id;
+  
+  try {
+    const university = await University.findById(id).populate("fee field");
+    res.json(university);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+
+})
 
 app.get("/universities/search", async (req, res) => {
   const searchTerm = req.query.q;

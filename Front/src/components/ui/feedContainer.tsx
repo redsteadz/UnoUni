@@ -11,7 +11,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
  
-export function PaginationDemo({ universities, setFeed }) {
+export function PaginationDemo({universities, setFeed }) {
   const [page, setPage] = useState(1);
   const universitiesPerPage = 10;
   const totalPages = Math.ceil(universities.length / universitiesPerPage);
