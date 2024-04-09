@@ -42,7 +42,7 @@ export function PaginationDemo({universities, setFeed }) {
   );
 }
 
-function FeedContainer() {
+function FeedContainer({search}) {
   const [universities, setUniversities] = useState([]);
   const [feed, setFeed] = useState([]);
   
@@ -50,7 +50,8 @@ function FeedContainer() {
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/universities');
+        console.log("search: ", search);
+        const response = await axios.get('http://localhost:3000/universities?q=' + search);
         console.log(response.data)
         setUniversities(response.data);
         setFeed(response.data.slice(0, 10));
@@ -60,7 +61,7 @@ function FeedContainer() {
     };
 
     fetchUniversities();
-  }, []);
+  }, [search]);
   
   return (
     <>

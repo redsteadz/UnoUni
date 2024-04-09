@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { GiHamburgerMenu } from "react-icons/gi";
 
-function Search() {
+function Search({setSearch}) {
   return (
     <>
       <div className="flex items-center gap-2">
@@ -23,10 +23,12 @@ function Search() {
           <SearchIcon />
           <Input
             className="border-0 
-          focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0 focus-visible:outline-none focus-visible:border-0"
+          focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0 focus-visible:outline-none focus-visible:border-0 text-black"
             type="text"
             name="search"
             placeholder="Search"
+            autoComplete="off"
+            onChange={(e) => setSearch(e.target.value)}
           />
         </motion.div>
       </div>

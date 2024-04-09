@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import Express from "express";
-import fs from 'fs';
+import fs from "fs";
 import cors from "cors";
 import bodyParser from "body-parser";
 import University from "./model/University.js";
@@ -21,33 +21,33 @@ app.use(bodyParser.json());
 app.use(cors());
 
 async function saveDataToMongoDB(data) {
-    try {
-        for (const entry of data) {
-            const field = await Course.create(entry.field);
+  try {
+    for (const entry of data) {
+      const field = await Course.create(entry.field);
 
-            const fee = await FeeStructure.create(entry.fee);
+      const fee = await FeeStructure.create(entry.fee);
 
-            const university = await University.create({
-                rank: entry.rank,
-                name: entry.name,
-                location: entry.location,
-                tags: entry.tags,
-                description: entry.description,
-                field: field._id,
-                fee: fee._id,
-                image_url: entry.image_url
-            });
+      const university = await University.create({
+        rank: entry.rank,
+        name: entry.name,
+        location: entry.location,
+        tags: entry.tags,
+        description: entry.description,
+        field: field._id,
+        fee: fee._id,
+        image_url: entry.image_url,
+      });
 
-            console.log('University created:', university.name);
-        }
-        console.log('All universities saved successfully.');
-    } catch (error) {
-        console.error('Error saving universities:', error);
+      console.log("University created:", university.name);
     }
+    console.log("All universities saved successfully.");
+  } catch (error) {
+    console.error("Error saving universities:", error);
+  }
 }
 
 // Read data from JSON file
-// fs.readFile('universities.json', 'utf8', (err, data) => {
+// fs.readFile('Pakistan.json', 'utf8', (err, data) => {
 //     if (err) {
 //         console.error('Error reading JSON file:', err);
 //         return;
@@ -61,11 +61,17 @@ async function saveDataToMongoDB(data) {
 //     }
 // });
 
-
-
 app.get("/universities", async (req, res) => {
+  const searchTerm = req.query.q;
   try {
-    const universities = await University.find().populate("fee field");
+   const universities = await University.find({
+      $or: [
+        { name: { $regex: searchTerm, $options: "i" } },
+        // { description: { $regex: searchTerm, $options: "i" } },
+        // { tags: { $regex: searchTerm, $options: "i" } },
+      ],
+    });
+    // console.log(universities);
     res.json(universities);
   } catch (err) {
     console.error(err);
@@ -75,19 +81,18 @@ app.get("/universities", async (req, res) => {
 
 app.get("/universities/:id", async (req, res) => {
   const id = req.params.id;
-  
+
   try {
     const university = await University.findById(id).populate("fee field");
     res.json(university);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
 
-})
-
-app.get("/universities/search", async (req, res) => {
+app.get("/universitySearch", async (req, res) => {
   const searchTerm = req.query.q;
-
+  console.log("searchTerm: ", searchTerm);
   try {
     const universities = await University.find({
       $or: [
@@ -95,8 +100,18 @@ app.get("/universities/search", async (req, res) => {
         { description: { $regex: searchTerm, $options: "i" } },
         { tags: { $regex: searchTerm, $options: "i" } },
       ],
-    }).populate("Fee Course");
+    }).populate("fee field");
     res.json(universities);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/universities_count", async (req, res) => {
+  try {
+    const count = await University.countDocuments({});
+    // console.log("Count: ", count);
+    res.status(200).json({ count });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
