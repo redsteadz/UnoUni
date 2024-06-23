@@ -26,7 +26,7 @@ const FieldComponent = ({ field, degrees }) => {
 };
 
 function UnivPage() {
-  const [university, setUniversity] = useState({});
+  const [university , setUniversity] = useState({});
   const fetchUniversityById = async (id) => {
     try {
       const response = await axios.get(
@@ -51,8 +51,9 @@ function UnivPage() {
     <div className="bg-gray-900 text-white">
       <header className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center flex-col">
             <h1 className="text-xl font-bold">{university.name}</h1>
+            <h1 className="text-md underline font-bold"> Rank - {university.rank}</h1>
           </div>
           <div className="w-24 h-24 bg-blue-500 flex items-center justify-center rounded-full">
             <img src={university.image_url} alt="" />
